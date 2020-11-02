@@ -72,7 +72,7 @@ Let's first do some simple exploration of this data.
 ```{r}
 length(levels(nyc$carrier))
 ```
-There are `r length(levels(nyc$carrier))`
+There are `r length(levels(nyc$carrier))` airlines
 
 - How many flights there were by the airline with code `OO`? (Hint: `nrow` can be useful here along with logical indexing)
 
@@ -87,7 +87,7 @@ There were `r nrow(nyc[nyc$carrier=="OO",])` flights with the code OO
 nycShortestFlight <- min(nyc$air_time, na.rm=TRUE)
 nycShortestFlight
 ```
-
+The shortest flight out of any NYC airport is `r nycShortestFlight` mins long
 
 - How many flights where there by United Airlines (code: UA) on Jan 12th 2013?
 
@@ -97,7 +97,7 @@ nycUA12Jan2013 <- nyc[nyc$carrier=="UA" & nyc$month == "1" & nyc$day == "12" & n
 nrow(nycUA12Jan2013)
 ```
 
-
+There were `r nrow(nycUA12Jan2013)` flights by United Airlines on Jan 12th 2013
 
 ### Arrival Delay
 
@@ -111,7 +111,7 @@ nyc_Jan_2013_arr_delay
 delay_by_airline<-tapply(nyc$dep_delay, nyc$carrier, mean, na.rm= TRUE)
 
 ```
-
+The average arrival delay for all airports combined in Jan 2013 is `r nyc_Jan_2013_arr_delay`
 
 - Whats was the median arrival delay for all airports and all airlines combined in Jan 2013?
 ```{r}
@@ -119,11 +119,11 @@ nyc_Jan_2013 <- nyc[nyc$year=="2013" & nyc$month=="1",]
 nyc_Jan_2013_arr_delay_median <- median(nyc_Jan_2013$arr_delay, na.rm=TRUE)
 nyc_Jan_2013_arr_delay_median
 ```
+The median arrival delay for all airports and all airlines combined in Jan 2013 is `r nyc_Jan_2013_arr_delay_median`
 
+Q. Based on your answers to the two questions above, what can you say about the distribution of arrival delays? Provide your answer in a text paragraph form.
 
-Based on your answers to the two questions above, what can you say about the distribution of arrival delays? Provide your answer in a text paragraph form.
-
-Since the median is negative but the average delay is positive, this shows that there are a few flights which have high average arrival delays thus skewing the overall average towards positive
+Ans - Since the median is negative but the average delay is positive, this shows that there are a few flights which have high average arrival delays thus skewing the overall average towards positive
 
 
 
@@ -176,19 +176,27 @@ a) Explore airgain data - calculate suitable descriptive statistics and appropri
 
 ```{r}
 MeanAirgain <- mean(nycflights$airgain, na.rm = TRUE)
-MeanAirgain
 
 
-median(nycflights$airgain, na.rm= TRUE)
+MedianAirgain<- median(nycflights$airgain, na.rm= TRUE)
 
 ```
 
+Mean - `r MeanAirgain`
+
+Median - `r median(nycflights$airgain, na.rm= TRUE)`
+
+Airgain by carrier - 
+```{r}
+meanairgainbycarrier <- tapply(nycflights$airgain, nycflights$carrier, mean, na.rm = TRUE)
+meanairgainbycarrier
+```
 
 b) Answer the questions:
 
   - do airlines actually gain any time when in air on average? 
 
-  Yes, on an average the airlines gain `r MeanAirgain` on an average
+  Yes, on an average the airlines gain `r MeanAirgain` mins. 
 
   - Calculate average airgain for different airlines - which airlines do a better job, which do a worse job? 
   
@@ -197,7 +205,7 @@ meanairgainbycarrier <- tapply(nycflights$airgain, nycflights$carrier, mean, na.
 meanairgainbycarrier
 barplot(meanairgainbycarrier)
 ```
-  The airlines `r names(meanairgainbycarrier[meanairgainbycarrier > 0])` do a better job at airgain and the airlines `r names(meanairgainbycarrier[meanairgainbycarrier < 0])`do a worse job at managing airgain
+  The airlines `r names(meanairgainbycarrier[meanairgainbycarrier > 0])` do a better job at airgain and the airlines `r names(meanairgainbycarrier[meanairgainbycarrier < 0])` do a worse job at managing airgain
 
 
 ### Merging Data Frames
@@ -210,8 +218,6 @@ a) Read the `planes.csv` file using `read.csv` command. Do any data cleaning nec
 
 ```{r}
 planes <-read.csv("planes.csv")
-str(planes)
-summary(planes)
 ```
 
 
@@ -228,7 +234,6 @@ c) Now that you have a merged dataset, think of what interesting questions that 
 Q1. What is the average airgain by model?
 ```{r}
 meanairgainbymodel <- tapply(merged$airgain, merged$model, mean, na.rm = TRUE)
-meanairgainbymodel
 barplot(meanairgainbymodel)
 
 ```
@@ -237,7 +242,6 @@ barplot(meanairgainbymodel)
 Q2. What is the average distance flown per model?
 ```{r}
 meandistancebymodel <- tapply(merged$distance, merged$model, mean, na.rm = TRUE)
-meandistancebymodel
 barplot(meandistancebymodel)
 ```
 
@@ -247,7 +251,6 @@ Q3. What is the average airgain as per type?
 
 ```{r}
 meanairgainbytype <- tapply(merged$airgain, merged$type, mean, na.rm = TRUE)
-meanairgainbytype
 barplot(meanairgainbytype)
 ```
 
@@ -255,7 +258,6 @@ barplot(meanairgainbytype)
 Q4. What are the average air_time per manufacturer?
 ```{r}
 meanairtimebymanufacturer <- tapply(merged$air_time, merged$manufacturer, mean, na.rm = TRUE)
-meanairtimebymanufacturer
 barplot(meanairtimebymanufacturer)
 ```
 
@@ -263,7 +265,6 @@ barplot(meanairtimebymanufacturer)
 Q5. What is the average airgain as per engine?
 ```{r}
 meanairgainbyengine <- tapply(merged$airgain, merged$engine, mean, na.rm = TRUE)
-meanairgainbyengine
 barplot(meanairgainbyengine)
 ```
 
